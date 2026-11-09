@@ -182,7 +182,7 @@ function render(){
   var img=el('qImg');if(q.img){img.src=q.img;img.classList.remove('hidden')}else{img.classList.add('hidden')}
   var w=el('optWrap');w.innerHTML='';
   q.options.forEach(function(opt,i){
-    var b=document.createElement('button');b.className='opt';b.textContent='ABCD EFGH'.split(' ')[i]+'. '+opt;
+    var b=document.createElement('button');b.className='opt';b.textContent='ABCD'[i]+'. '+opt;
     if(S.answers[S.idx]===i){b.classList.add('sel')}
     if(S.mode==='study'&&S.checked[S.idx]){
       b.disabled=true;
