@@ -208,6 +208,7 @@ function render(){
 }
 function pick(i){
   if(S.finished){return}
+  if(S.mode==='exam' && Date.now()>=S.deadline){tick();return}
   if(S.mode==='study'){
     if(S.checked[S.idx]){return}
     S.answers[S.idx]=i;S.checked[S.idx]=true;
@@ -229,7 +230,7 @@ function finish(){
   });
   var persisted=window.ChampionshipProgress && ChampionshipProgress.record({
     subject:document.querySelector('h1').textContent,paper:S.paper,mode:S.mode,
-    questions:S.qs,answers:S.answers,startedAt:S.startedAt,
+    questions:S.qs,answers:S.answers,startedAt:S.startedAt,deadline:S.deadline,
     correct:cor,wrong:wro,blank:bla,score:score
   });
   if(S.mode==='exam'){
@@ -263,6 +264,7 @@ el('prevBtn').onclick=function(){if(S.idx>0){S.idx--;render()}};
 el('nextBtn').onclick=function(){if(S.idx<S.qs.length-1){S.idx++;render()}};
 el('clearBtn').onclick=clearAns;
 el('submitBtn').onclick=finish;
+window.addEventListener('focus',function(){if(S && !S.finished && S.mode==='exam')tick()});
 el('againBtn').onclick=function(){el('results').classList.add('hidden');el('setup').classList.remove('hidden');loadBest()};
 initSetup();
 </script>
