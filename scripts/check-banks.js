@@ -40,7 +40,12 @@ for (const path of paths) {
       if (!Number.isInteger(q.answer) || q.answer < 0 || q.answer >= q.options.length) {
         fail(where, 'answer index out of range'); continue;
       }
-      if (new Set(q.options.map(norm)).size !== q.options.length) fail(where, 'duplicate answer options');
+      // Case matters in scientific notation: BB, Bb and bb are distinct genotypes.
+      // A few original source PDFs themselves repeat distractors; do not invent replacements.
+      if (new Set(q.options.map(x => x.trim())).size !== q.options.length) {
+        if (supplemental) fail(where, 'duplicate answer options');
+        else warnings.push(where + ': source/legacy duplicate option — verify against original paper');
+      }
       if (q.topic) tagged++;
       if (q.img) images++;
       const k = norm(q.q);
