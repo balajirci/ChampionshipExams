@@ -65,6 +65,8 @@ node --check progress.js
 
 A GitHub Action validates structure on push and pull request. A clean structural check does **not** certify all facts or transcribed answer keys. Keep an explicit correction log during future content reviews; never silently alter an archived official question.
 
+**Known source anomaly:** The printed 2022 US Nationals Varsity/JV Biology paper, Q29, repeats the same wording for options A and C. This is present in the original published PDF, not merely a transcription error. The validator warns rather than inventing a replacement distractor. Treat source defects separately from errors introduced by our own content.
+
 ## Study approach
 
 - **Learn:** Study mode; read explanations and investigate unfamiliar concepts.
