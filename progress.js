@@ -46,7 +46,10 @@
       subject: run.subject, paper: run.paper, mode: run.mode,
       questionCount: run.questions.length, correct: run.correct, wrong: run.wrong,
       blank: run.blank, score: run.score, maxScore: 2 * run.questions.length,
-      elapsedSeconds: Math.max(0, Math.round((Date.now() - run.startedAt) / 1000)),
+      elapsedSeconds: Math.max(0, Math.round(Math.min(
+        Date.now() - run.startedAt,
+        run.mode === 'exam' && run.deadline ? run.deadline - run.startedAt : Infinity
+      ) / 1000)),
       responses: responses
     });
     if (db.attempts.length > MAX_ATTEMPTS) db.attempts = db.attempts.slice(-MAX_ATTEMPTS);
