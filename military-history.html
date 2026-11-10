@@ -183,7 +183,7 @@ function render(){
   el('stScore').textContent=S.score;
   el('qMeta').innerHTML=(q.topic?'<span class="tag">'+q.topic+'</span>':'')+'<span class="tag">'+S.paper+'</span>';
   el('qText').textContent=q.q;
-  var img=el('qImg');if(q.img){img.src=q.img;img.classList.remove('hidden')}else{img.classList.add('hidden')}
+  var img=el('qImg');if(q.img){img.src=q.img;img.alt=q.imgAlt||'Map or illustration for question '+(S.idx+1);img.classList.remove('hidden')}else{img.classList.add('hidden')}
   var w=el('optWrap');w.innerHTML='';
   q.options.forEach(function(opt,i){
     var b=document.createElement('button');b.className='opt';b.textContent='ABCD'[i]+'. '+opt;
@@ -200,6 +200,7 @@ function render(){
   if(S.mode==='study'&&S.checked[S.idx]){
     var ok=S.answers[S.idx]===cur().answer;
     fb.textContent=ok?'Correct - +2 points':'Not quite - the correct answer is '+'ABCD'[cur().answer]+'. (-1)';
+    if(cur().explanation){fb.textContent+=' Why: '+cur().explanation}
     fb.className='feedback '+(ok?'ok':'no');fb.classList.remove('hidden');
   } else {fb.classList.add('hidden')}
   el('prevBtn').disabled=S.idx===0;
@@ -251,6 +252,7 @@ function finish(){
     var rightText=document.createElement('span');rightText.className='ans';rightText.textContent='ABCD'[q.answer]+'. '+q.options[q.answer];rightNode.appendChild(rightText);d.appendChild(rightNode);
     var yoursNode=document.createElement('div');yoursNode.textContent='Your answer: ';
     var yoursText=document.createElement('span');yoursText.className=cls;yoursText.textContent=yours;yoursNode.appendChild(yoursText);d.appendChild(yoursNode);
+    if(q.explanation){var why=document.createElement('p');why.textContent='Explanation: '+q.explanation;d.appendChild(why)}
     w.appendChild(d);
   });
   var status=el('progressSaveStatus');
