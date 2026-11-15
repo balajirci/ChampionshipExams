@@ -143,5 +143,46 @@ function pick(e,btn){
 document.getElementById('onext').onclick=newRound;
 newRound();
 </script>
+<!-- ABHINAV-TIME-TRACKER v1 -->
+<div id="abTimePanel" style="max-width:880px;margin:18px auto;padding:0 14px"></div>
+<script>
+(function(){
+  var KEY='abhinav-time-log-v1';
+  var PAGE='Ancient Timeline';
+  if(PAGE.indexOf('__')===0){ PAGE=document.title.replace(/\s*[\u2014|\-].*$/,'').trim() || 'Trainer'; }
+  function today(){var d=new Date(),m=('0'+(d.getMonth()+1)).slice(-2),dd=('0'+d.getDate()).slice(-2);return d.getFullYear()+'-'+m+'-'+dd}
+  function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return{}}}
+  function save(log){try{localStorage.setItem(KEY,JSON.stringify(log))}catch(e){}}
+  function add(sec){var log=load(),t=today();log[t]=log[t]||{};log[t][PAGE]=(log[t][PAGE]||0)+sec;save(log)}
+  var last=Date.now(), lastAct=Date.now();
+  ['pointerdown','keydown','touchstart','wheel','scroll'].forEach(function(ev){document.addEventListener(ev,function(){lastAct=Date.now()},{passive:true})});
+  function tick(){
+    var now=Date.now(), el=Math.round((now-last)/1000); last=now;
+    if(document.hidden) return;
+    if(now-lastAct>90000) return;
+    if(el>0 && el<=15) add(el);
+  }
+  setInterval(tick,5000);
+  document.addEventListener('visibilitychange',function(){ if(document.hidden){ tick(); } last=Date.now(); });
+  function fmt(sec){ if(sec<60) return sec+'s'; var m=sec/60; return (m<10? m.toFixed(1): Math.round(m))+' min'; }
+  function render(){
+    var host=document.getElementById('abTimePanel'); if(!host) return;
+    var log=load(), t=today(), day=log[t]||{}, pages=Object.keys(day).sort(), tot=0;
+    pages.forEach(function(p){tot+=day[p]});
+    var all=0; Object.keys(log).forEach(function(d){Object.keys(log[d]).forEach(function(p){all+=log[d][p]})});
+    var h='<details style="background:#1a2233;border:1px solid #31405e;border-radius:12px;padding:12px 16px;color:#e8edf6;font-family:Verdana,Geneva,sans-serif;font-size:13.5px">';
+    h+='<summary style="cursor:pointer;font-weight:bold">Study time today: '+fmt(tot)+' (all trainers)</summary>';
+    if(pages.length){ h+='<div style="margin-top:8px">Today: '+pages.map(function(p){return p+' '+fmt(day[p])}).join(' &middot; ')+'</div>'; }
+    else { h+='<div style="margin-top:8px;color:#9fb0c9">No trainer time logged yet today.</div>'; }
+    var days=Object.keys(log).sort().reverse().slice(0,7);
+    if(days.length){ h+='<div style="margin-top:6px;color:#9fb0c9">Last 7 days: '+days.map(function(d){var s=0;Object.keys(log[d]).forEach(function(p){s+=log[d][p]});return d.slice(5)+' '+fmt(s)}).join(' &middot; ')+'</div>'; }
+    h+='<div style="margin-top:6px;color:#9fb0c9">All-time on this browser: '+fmt(all)+'. Counts active time only (pauses when the tab is hidden or idle over 90 seconds).</div>';
+    h+='</details>';
+    host.innerHTML=h;
+  }
+  render(); setInterval(render,20000);
+})();
+</script>
+
 </body>
 </html>
